@@ -10,38 +10,47 @@ import org.apache.log4j.PropertyConfigurator;
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
+import com.espertech.esperio.http.EsperIOHTTPAdapter;
+import com.espertech.esperio.http.config.ConfigurationHTTPAdapter;
+import com.espertech.esperio.http.config.Request;
 
 public class CEPEngine {
-	static Logger log = Logger.getLogger(CEPEngine.class);
-	private ArrayList<EPServiceProvider> epServiceList;
+	private static final String ENGINE_URI = "subway";
+	private static final String REQUEST_URI = "http://117.16.146.87:80/esper/test";
 	
-	public static void main(String[] args) {
-		PropertyConfigurator.configure("etc/log4j.properties");
-		log.setLevel(Level.WARN);
-	}
+	private EPServiceProvider engine;
 	
 	public CEPEngine() {
-		epServiceList = start("Subway-Event-Processing");
+		configureEngine();
+		startHTTPAdapter();
 	}
 	
-	public ArrayList<EPServiceProvider> getEpServiceList() {
-		return epServiceList;
-	}
-
-	private static ArrayList<EPServiceProvider> start(String engineURI) {
-		ArrayList<EPServiceProvider> list = new ArrayList<EPServiceProvider>();
-		
-		log.info("Setting up Confiugration");
-		
+	private void configureEngine() {
 		//XML Configuration Test
 		Configuration config = new Configuration();
-		config.configure(new File("./nfm.examples.cfg.xml"));
-		EPServiceProvider epService = EPServiceProviderManager.getProvider(engineURI, config);
-		list.add(epService);
-		SubwaySensorDataStatement eplStmt = new SubwaySensorDataStatement(epService.getEPAdministrator());
+		config.configure(new File("./nfm.subway.cfg.xml"));
+
+		EPServiceProvider engine = EPServiceProviderManager.getProvider(ENGINE_URI, config);
+		SubwaySensorDataStatement eplStmt = new SubwaySensorDataStatement(engine.getEPAdministrator());
 		eplStmt.addListener(new SubwayUpdateListener());
-		
-		return list;
+		this.engine = engine;
 	}
+
+	private void startHTTPAdapter() {
+		ConfigurationHTTPAdapter adapterConfig = new ConfigurationHTTPAdapter();
+		Request request = new Request();
+		request.setStream("DataStream");
+		request.setUri(REQUEST_URI);
+		adapterConfig.getRequests().add(request);
+		
+		EsperIOHTTPAdapter httpAdapter = new EsperIOHTTPAdapter(adapterConfig, ENGINE_URI);
+		
+		httpAdapter.start();
+	}
+
+	public EPServiceProvider getEngine() {
+		return engine;
+	}
+	
 
 }

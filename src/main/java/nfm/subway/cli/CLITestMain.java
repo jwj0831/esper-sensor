@@ -18,7 +18,7 @@ public class CLITestMain {
 		System.out.println("Finish to prepare Esper");
 		int i;
 		for(i=1; i<MAX_EVENT_NUM; i++){
-			engine.getEpServiceList().get(0).getEPRuntime().sendEvent(dao.get(i));
+			engine.getEngine().getEPRuntime().sendEvent(dao.get(i));
 			try {Thread.sleep(INTERVAL_TIME);} catch (InterruptedException e) { }
 		}
 	}

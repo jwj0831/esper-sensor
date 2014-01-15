@@ -39,7 +39,12 @@
 		<dependency>
 			<groupId>com.espertech</groupId>
 			<artifactId>esper</artifactId>
-			<version>4.9.0</version>
+			<version>4.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.espertech</groupId>
+			<artifactId>esperio-http</artifactId>
+			<version>4.11.0</version>
 		</dependency>
 	</dependencies>
 	<distributionManagement>
