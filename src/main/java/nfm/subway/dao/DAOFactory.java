@@ -5,6 +5,7 @@ public class DAOFactory {
 		return new RawDataDAO(connectionMaker());
 	}
 
+	
 	private ConnectionMaker connectionMaker() {
 		return new JDBCConnectionMaker();
 	}

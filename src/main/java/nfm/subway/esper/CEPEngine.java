@@ -10,6 +10,7 @@ import org.apache.log4j.PropertyConfigurator;
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
+import com.espertech.esper.client.EPStatement;
 import com.espertech.esperio.http.EsperIOHTTPAdapter;
 import com.espertech.esperio.http.config.ConfigurationHTTPAdapter;
 import com.espertech.esperio.http.config.Request;
@@ -17,6 +18,7 @@ import com.espertech.esperio.http.config.Request;
 public class CEPEngine {
 	private static final String ENGINE_URI = "subway";
 	private static final String REQUEST_URI = "http://117.16.146.87:80/esper/test";
+	//private static final String REQUEST_URI = "http://54.238.255.202:8080/subair/realtime_rawdata";
 	
 	private EPServiceProvider engine;
 	
@@ -31,6 +33,9 @@ public class CEPEngine {
 		config.configure(new File("./nfm.subway.cfg.xml"));
 
 		EPServiceProvider engine = EPServiceProviderManager.getProvider(ENGINE_URI, config);
+		EPStatement myPattern = engine.getEPAdministrator().createPattern("every(test=RawData(value > 150))") ;
+		myPattern.addListener(new PatternTestListener());
+		
 		SubwaySensorDataStatement eplStmt = new SubwaySensorDataStatement(engine.getEPAdministrator());
 		eplStmt.addListener(new SubwayUpdateListener());
 		this.engine = engine;
