@@ -17,8 +17,8 @@ import com.espertech.esperio.http.config.Request;
 
 public class CEPEngine {
 	private static final String ENGINE_URI = "subway";
-	private static final String REQUEST_URI = "http://117.16.146.87:80/esper/test";
-	//private static final String REQUEST_URI = "http://54.238.255.202:8080/subair/realtime_rawdata";
+	//private static final String REQUEST_URI = "http://117.16.146.87:80/esper/test";
+	private static final String REQUEST_URI = "http://54.238.255.202:8080/subair/realtime_rawdata";
 	
 	private EPServiceProvider engine;
 	
